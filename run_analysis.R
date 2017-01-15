@@ -1,5 +1,6 @@
 rm(list = ls())
-setwd('C:/Users/M041066/Downloads/Cleaning Data/Project')
+setwd('/Users/norman/desktop/data science course/UCI HAR Dataset/')
+library(dplyr)
 
 
 # process training dataset
@@ -40,9 +41,6 @@ rm(list = c('al', 'fl', 'te', 'tel', 'tes', 'tr', 'trs', 'trl'))
 dat <- rbind(train, test)
 
 # QUESTION NUMBER 2 - Extracts only the measurements on the mean and standard deviation for each measurement. 
-# check number of columns to extract
-sum(grepl('mean', names))
-sum(grepl('std', names))
 dat1 <- dat[,(grepl('mean', names)|grepl('std', names))]
 dat1 <- cbind(dat[,c(1:2)], dat1)
 
@@ -53,9 +51,11 @@ dat1 <- cbind(dat[,c(1:2)], dat1)
 # this is done
 
 # QUESTION NUMBER 5 - create tidy data set with the average of each variable for each activity and each subject
+dat1$subject <- as.factor(dat1$subject)
 
-write.table(dat1, 'tidydata.txt')
+dat2 <- dat1                          %>%
+        group_by(subject, activity)   %>%
+        summarise_each(funs(mean))
 
-
-
+write.table(dat2, 'tidydata.txt', row.names = FALSE)
 
